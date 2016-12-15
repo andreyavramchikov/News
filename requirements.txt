@@ -4,3 +4,4 @@ beautifulsoup4
 fake-useragent
 requests
 selenium
+pyvirtualdisplay

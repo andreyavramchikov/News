@@ -1,8 +1,6 @@
-Django==1.10.4
-Fabric==1.13.1
-PyVirtualDisplay
+Django
 arrow==0.10.0
-beautifulsoup4==4.5.1
-fake-useragent==0.1.4
-requests==2.12.3
-selenium==3.0.2
+beautifulsoup4
+fake-useragent
+requests
+selenium

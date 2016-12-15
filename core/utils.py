@@ -8,7 +8,7 @@ def publish_news(news_id, add_link=True, add_content=True):
     news = News.objects.get(pk=news_id)
     link = news.link
     content = news.content
-    driver = Driver("chrome", False, headless=True).driver
+    driver = Driver("firefox", False, headless=True).driver
     driver.get("http://vk.com")
     elem_email = driver.find_element_by_id('index_email')
     elem_password = driver.find_element_by_id('index_pass')

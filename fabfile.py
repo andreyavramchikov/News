@@ -23,12 +23,14 @@ def deploy():
     clone_repo()
     install_requirements()
     # run('source %(env_path)s/bin/activate; %(env_path)s/bin/python %(repo_path)s/manage.py collectstatic' % env)
+    sudo('apt-get install xvfb')
     sudo(
         'ln -s /home/ubuntu/projects/News/repository/mysite_nginx.conf /etc/nginx/sites-enabled/')
     sudo('/etc/init.d/nginx restart')
     run('source %(env_path)s/bin/activate; %(env_path)s/bin/python %(repo_path)s/manage.py migrate' % env)
     run('source %(env_path)s/bin/activate; pip install uwsgi' % env)
     run('source %(env_path)s/bin/activate; uwsgi --ini %(repo_path)s/mysite_uwsgi.ini' % env)
+
 
 
 def clean_repositories():

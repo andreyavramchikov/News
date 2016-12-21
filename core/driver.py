@@ -51,3 +51,4 @@ class Driver(object):
 
     def get_firefox_driver(self):
         return webdriver.Firefox(self.set_firefox_preference(webdriver.FirefoxProfile()))
+        # return webdriver.Firefox()

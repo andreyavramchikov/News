@@ -10,10 +10,15 @@ class News(models.Model):
     HABRAHABR = 'HABRAHABR'
     GEEKTIMES = 'GEEKTIMES'
     TPROGER = 'TPROGER'
+    GAGADGET = 'GAGADGET'
+    AIN = 'AIN'
     SITE_CHOICES = (
         (HABRAHABR, 'HABRAHABR'),
         (GEEKTIMES, 'GEEKTIMES'),
         (TPROGER, 'TPROGER'),
+        (GAGADGET, 'GAGADGET'),
+        (AIN, 'AIN'),
+
     )
 
     site = models.CharField(choices=SITE_CHOICES, max_length=255)

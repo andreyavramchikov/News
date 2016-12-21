@@ -8,14 +8,14 @@ from core.models import News
 
 
 class Command(BaseCommand):
-    TPROGER = 'https://tproger.ru'
-    PAGE_COUNT = 5
+    GAGADGET = 'http://gagadget.com'
+    PAGE_COUNT = 6
 
     def handle(self, *args, **options):
         pagination = None
-        soup = self.get_soup(self.TPROGER)
+        soup = self.get_soup('{}/news/'.format(self.GAGADGET))
         try:
-            pagination = soup.find("div", {"class": "pagination"})
+            pagination = soup.find("div", {"class": "paginator"})
         except Exception as e:
             print e
 
@@ -24,14 +24,14 @@ class Command(BaseCommand):
 
         if pagination:
             for page_index in range(2, self.PAGE_COUNT):
-                soup = self.get_soup('{}/page/{}'.format(self.TPROGER, page_index))
+                soup = self.get_soup('{}/news/?page={}'.format(self.GAGADGET, page_index))
                 posts = self.get_posts(soup)
                 self.get_save_info(posts)
 
     @staticmethod
     def get_posts(soup):
-        main_columns = soup.find("div", {"id": "main_columns"})
-        posts = main_columns.findAll("article")
+        main_columns = soup.find("div", {"class": "l-grid_main pull-right"})
+        posts = main_columns.findAll("div", {"class": "l-inner"})
         return posts
 
     @staticmethod
@@ -52,20 +52,17 @@ class Command(BaseCommand):
         likes = ''
         for post in posts:
             try:
-                link = post.find("h1", {"class":"entry-title"}).find('a').get('href').encode('utf-8')
+                link = post.find("a", {"class": "cell-img"}).get('href').encode('utf-8')
+                link = '{}{}'.format(self.GAGADGET, link)
             except AttributeError:
                 pass
             try:
-                date_published = post.find("time", {"class": "entry-date updated"}).getText().encode(
+                date_published = post.find("span", {"class": "cell-date"}).getText().encode(
                     'utf-8')
             except AttributeError:
                 pass
             try:
-                header = post.find("span", {"class": "entry-title-heading"}).getText().encode('utf-8')
-            except AttributeError:
-                pass
-            try:
-                news_content = post.find("div", {"class": "entry-content"}).getText().encode('utf-8')
+                header = post.find("span", {"class": "cell-title"}).find('a').getText().encode('utf-8')
             except AttributeError:
                 pass
 
@@ -73,19 +70,19 @@ class Command(BaseCommand):
             soup = self.get_soup(link)
 
             try:
-                reviews = soup.find("span", {"class": "post-views-count"}).getText().encode('utf-8')
+                news_content = soup.find("div", {"class": "b-font-def post-links"}).findAll('p')[0].getText().encode('utf-8')
             except AttributeError:
                 pass
-
-            try:
-                likes = soup.find("span", {"id": "stats_num"}).getText().encode('utf-8')
-            except AttributeError:
-                pass
+            #
+            # try:
+            #     likes = soup.find("span", {"class": "social-likes__counter social-likes__counter_vkontakte"}).getText().encode('utf-8')
+            # except AttributeError:
+            #     pass
 
             hash = hashlib.md5(header).hexdigest()
 
             try:
-                News.objects.create(site=News.TPROGER,
+                News.objects.create(site=News.GAGADGET,
                                     link=link,
                                     date_published=date_published,
                                     header=header,

@@ -18,7 +18,7 @@ from .models import News
 class NewsAdmin(admin.ModelAdmin):
     ordering = ('date_parsed', 'comments', 'add_to_favorite')
 
-    list_display = ('site', 'header', 'show_link', 'news_actions', 'date_parsed', 'date_published',
+    list_display = ('site', 'header', 'show_link', 'date_parsed', 'date_published',
                     'comments', 'add_to_favorite', 'reviews', 'likes')
 
     list_filter = ('site', 'date_parsed',)
@@ -57,24 +57,26 @@ class NewsAdmin(admin.ModelAdmin):
 
 
 def parse_all_sites(modeladmin, request, queryset):
-    call_command('parse_habr')
-    call_command('parse_geektimes')
-    call_command('parse_tproger')
+    call_command('habrahabr')
+    call_command('geektimes')
+    call_command('tproger')
+    call_command('ain_ua')
+    call_command('gagadget')
 
 
 def parse_habr(modeladmin, request, queryset):
-    call_command('parse_habr')
+    call_command('habrahabr')
 
 
 def parse_geektimes(modeladmin, request, queryset):
-    call_command('parse_geektimes')
+    call_command('geektimes')
 
 
 def parse_tproger(modeladmin, request, queryset):
-    call_command('parse_tproger')
+    call_command('tproger')
 
 
-admin.site.add_action(parse_all_sites)
+# admin.site.add_action(parse_all_sites)
 admin.site.add_action(parse_habr)
 admin.site.add_action(parse_geektimes)
 admin.site.add_action(parse_tproger)

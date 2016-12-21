@@ -8,7 +8,7 @@ def publish_news(news_id, add_link=True, add_content=True):
     news = News.objects.get(pk=news_id)
     link = news.link
     content = news.content
-    driver = Driver("firefox", False, headless=True).driver
+    driver = Driver("chrome", False, headless=True).driver
     driver.get("http://vk.com")
     elem_email = driver.find_element_by_id('index_email')
     elem_password = driver.find_element_by_id('index_pass')
@@ -18,7 +18,7 @@ def publish_news(news_id, add_link=True, add_content=True):
     elem_submit.click()
     time.sleep(3)
 
-    driver.get('https://vk.com/programmersnews')
+    driver.get('https://vk.com/techrocks')
     time.sleep(3)
     add_news_field = driver.find_element_by_css_selector('#post_field')
     if add_link:

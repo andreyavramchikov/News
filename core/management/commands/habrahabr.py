@@ -1,45 +1,36 @@
 # -*- coding: utf-8 -*-
-import requests
 import hashlib
 from django.core.management.base import BaseCommand
-from bs4 import BeautifulSoup
 from django.db.utils import IntegrityError
 from core.models import News
+from .parser import Parser
 
 
 class Command(BaseCommand):
-    HABRAHABR = 'https://habrahabr.ru'
+
+    def __init__(self):
+        super(Command, self).__init__()
+        self.url = 'https://habrahabr.ru'
+        self.page_count = 4
 
     def handle(self, *args, **options):
-        pagination = None
-        soup = self.get_soup(self.HABRAHABR)
-        posts = self.get_posts(soup)
-        try:
-            pagination = soup.find("div", {"class": "page-nav"})
-            pagination = pagination.find("ul", {"id": "nav-pages"})
-            page_count = len(pagination.findAll('li'))
-        except Exception as e:
-            print e
+        parser = Parser(default_url=self.url)
+        pagination = parser.get_pagination("div", "class", "page-nav")
+        soup = parser.get_soup(self.url)
+        posts = self.get_posts(soup, "div", "class", "post post_teaser shortcuts_item")
 
         self.get_save_info(posts)
 
         if pagination:
-            for page_index in range(2, page_count):
-                soup = self.get_soup('{}/page{}'.format(self.HABRAHABR, page_index))
-                posts = self.get_posts(soup)
+            for page_index in range(2, self.page_count):
+                soup = parser.get_soup('{}/page{}'.format(self.url, page_index))
+                posts = self.get_posts(soup, "div", "class", "post post_teaser shortcuts_item")
                 self.get_save_info(posts)
 
     @staticmethod
-    def get_posts(soup):
-        posts = soup.findAll("div", {"class": "post post_teaser shortcuts_item"})
+    def get_posts(soup, elem, identificator, value):
+        posts = soup.findAll(elem, {identificator: value})
         return posts
-
-    @staticmethod
-    def get_soup(url):
-        response = requests.get(url)
-        content = response.content
-        soup = BeautifulSoup(content)
-        return soup
 
     @staticmethod
     def get_save_info(posts):

@@ -6,25 +6,27 @@ from bs4 import BeautifulSoup
 from django.db.utils import IntegrityError
 from core.models import News
 
+from .parser import Parser
 
-class Command(BaseCommand):
-    TPROGER = 'https://tproger.ru'
-    PAGE_COUNT = 3
+
+class Command(BaseCommand, Parser):
+
+    def __init__(self):
+        super(Command, self).__init__()
+        self.url = 'https://tproger.ru'
+        self.page_count = 4
 
     def handle(self, *args, **options):
-        pagination = None
-        soup = self.get_soup(self.TPROGER)
-        try:
-            pagination = soup.find("div", {"class": "pagination"})
-        except Exception as e:
-            print e
-
+        parser = Parser(default_url=self.url)
+        pagination = parser.get_pagination("div", "class", "pagination")
+        soup = parser.get_soup(self.url)
         posts = self.get_posts(soup)
+
         self.get_save_info(posts)
 
         if pagination:
-            for page_index in range(2, self.PAGE_COUNT):
-                soup = self.get_soup('{}/page/{}'.format(self.TPROGER, page_index))
+            for page_index in range(2, self.page_count):
+                soup = parser.get_soup('{}/page{}'.format(self.url, page_index))
                 posts = self.get_posts(soup)
                 self.get_save_info(posts)
 
@@ -33,13 +35,6 @@ class Command(BaseCommand):
         main_columns = soup.find("div", {"id": "main_columns"})
         posts = main_columns.findAll("article")
         return posts
-
-    @staticmethod
-    def get_soup(url):
-        response = requests.get(url)
-        content = response.content
-        soup = BeautifulSoup(content)
-        return soup
 
     def get_save_info(self, posts):
         date_published = ''

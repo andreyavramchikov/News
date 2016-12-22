@@ -13,6 +13,10 @@ def parse_all():
        2. celery -A news beat -l info
     """
     call_command('habrahabr')
+    call_command('geektimes')
+    call_command('tproger')
+    call_command('ain_ua')
+    call_command('gagadget')
     print 'FINISHED'
 
 

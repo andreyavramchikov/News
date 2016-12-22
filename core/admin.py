@@ -55,6 +55,16 @@ class NewsAdmin(admin.ModelAdmin):
     news_actions.short_description = 'Publish Action'
     news_actions.allow_tags = True
 
+    # if the user did not select any items we still need to proceed with all actions except deletion
+    def changelist_view(self, request, extra_context=None):
+        if 'action' in request.POST and request.POST['action'] != 'delete':
+            if not request.POST.getlist(admin.ACTION_CHECKBOX_NAME):
+                post = request.POST.copy()
+                for u in News.objects.all():
+                    post.update({admin.ACTION_CHECKBOX_NAME: str(u.id)})
+                request._set_post(post)
+        return super(NewsAdmin, self).changelist_view(request, extra_context)
+
 
 def parse_all_sites(modeladmin, request, queryset):
     call_command('habrahabr')

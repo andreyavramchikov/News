@@ -4,4 +4,5 @@ beautifulsoup4
 fake-useragent
 requests
 selenium
+MySQL-python==1.2.5
 pyvirtualdisplay

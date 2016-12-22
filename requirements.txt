@@ -6,3 +6,4 @@ requests
 selenium
 MySQL-python==1.2.5
 pyvirtualdisplay
+celery==3.1.18

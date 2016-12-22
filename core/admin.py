@@ -86,7 +86,17 @@ def parse_tproger(modeladmin, request, queryset):
     call_command('tproger')
 
 
+def parse_ain_ua(modeladmin, request, queryset):
+    call_command('ain_ua')
+
+
+def parse_gagadget(modeladmin, request, queryset):
+    call_command('gagadget')
+
+
 # admin.site.add_action(parse_all_sites)
 admin.site.add_action(parse_habr)
 admin.site.add_action(parse_geektimes)
 admin.site.add_action(parse_tproger)
+admin.site.add_action(parse_ain_ua)
+admin.site.add_action(parse_gagadget)

@@ -18,8 +18,8 @@ class Command(BaseCommand, Parser):
 
     def handle(self, *args, **options):
         parser = Parser(default_url=self.url)
-        pagination = parser.get_pagination("div", "class", "pagination")
         soup = parser.get_soup(self.url)
+        pagination = parser.get_pagination("div", "class", "pagination")
         posts = self.get_posts(soup)
 
         self.get_save_info(posts)

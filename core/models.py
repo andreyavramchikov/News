@@ -23,10 +23,10 @@ class News(models.Model):
 
     site = models.CharField(choices=SITE_CHOICES, max_length=255)
     link = models.CharField(max_length=255, blank=True)
-    header = models.CharField(max_length=255, blank=True)
+    header = models.CharField(max_length=255, blank=True, verbose_name="Title")
     content = models.TextField(blank=True)
     date_parsed = models.DateTimeField(auto_now_add=True, verbose_name="Parsed")
-    date_published = models.CharField(verbose_name="Published", max_length=255, blank=True)
+    date_published = models.CharField(verbose_name="Published", max_length=255, blank=True, null=True)
     comments = models.IntegerField(null=True, blank=True, verbose_name="Comments")
     likes = models.CharField(max_length=255, blank=True)
     add_to_favorite = models.IntegerField(null=True, blank=True, verbose_name="Favorite")

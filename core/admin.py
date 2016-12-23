@@ -18,15 +18,15 @@ from .models import News
 class NewsAdmin(admin.ModelAdmin):
     ordering = ('date_parsed', 'comments', 'add_to_favorite')
 
-    list_display = ('site', 'header', 'show_link', 'date_parsed', 'date_published',
+    list_display = ('site', 'title', 'date_parsed', 'date_published',
                     'comments', 'add_to_favorite', 'reviews', 'likes')
 
     list_filter = ('site', 'date_parsed',)
 
-    def show_link(self, obj):
-        return '<a href="{}">Переход</a>'.format(obj.link)
+    def title(self, obj):
+        return '<a href="{}" target="_blank">{}</a>'.format(obj.link, obj.header.encode('utf-8'))
 
-    show_link.allow_tags = True
+    title.allow_tags = True
 
     def queryset(self, request):
         return super(NewsAdmin, self).queryset(request).filter(date_parsed__gte=arrow.now().replace(weeks=+2).datetime)

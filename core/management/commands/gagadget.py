@@ -9,7 +9,7 @@ from core.models import News
 
 class Command(BaseCommand):
     GAGADGET = 'http://gagadget.com'
-    PAGE_COUNT = 6
+    PAGE_COUNT = 3
 
     def handle(self, *args, **options):
         pagination = None
@@ -21,7 +21,6 @@ class Command(BaseCommand):
 
         posts = self.get_posts(soup)
         self.get_save_info(posts)
-
         if pagination:
             for page_index in range(2, self.PAGE_COUNT):
                 soup = self.get_soup('{}/news/?page={}'.format(self.GAGADGET, page_index))
@@ -73,11 +72,6 @@ class Command(BaseCommand):
                 news_content = soup.find("div", {"class": "b-font-def post-links"}).findAll('p')[0].getText().encode('utf-8')
             except AttributeError:
                 pass
-            #
-            # try:
-            #     likes = soup.find("span", {"class": "social-likes__counter social-likes__counter_vkontakte"}).getText().encode('utf-8')
-            # except AttributeError:
-            #     pass
 
             hash = hashlib.md5(header).hexdigest()
 

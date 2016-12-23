@@ -29,14 +29,14 @@ class Command(BaseCommand):
         return soup
 
     def get_save_info(self, posts):
-        date_published = ''
-        header = ''
-        news_content = ''
-        reviews = ''
+        date_published = None
+        header = None
+        news_content = None
         favorite = None
         comments = None
-        link = ''
+        link = None
         likes = ''
+        reviews = ''
         for post in posts:
             try:
                 link = post.find("a").get('href').encode('utf-8')

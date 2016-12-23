@@ -11,12 +11,12 @@ class Command(BaseCommand):
     def __init__(self):
         super(Command, self).__init__()
         self.url = 'https://geektimes.ru'
-        self.page_count = 4
+        self.page_count = 3
 
     def handle(self, *args, **options):
         parser = Parser(default_url=self.url)
-        pagination = parser.get_pagination("div", "class", "page-nav")
         soup = parser.get_soup(self.url)
+        pagination = parser.get_pagination("div", "class", "page-nav")
         posts = self.get_posts(soup, "div", "class", "post post_teaser shortcuts_item")
 
         self.get_save_info(posts)

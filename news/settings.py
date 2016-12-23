@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['ec2-54-165-162-6.compute-1.amazonaws.com',]
 # Application definition
 
 INSTALLED_APPS = [
+    'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -142,3 +143,7 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Africa/Nairobi'
+
+
+from django.conf.locale.en import formats as en_formats
+en_formats.DATETIME_FORMAT = "db H:i"

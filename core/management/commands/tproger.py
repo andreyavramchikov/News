@@ -14,21 +14,21 @@ class Command(BaseCommand, Parser):
     def __init__(self):
         super(Command, self).__init__()
         self.url = 'https://tproger.ru'
-        self.page_count = 4
+        # self.page_count = 2
 
     def handle(self, *args, **options):
         parser = Parser(default_url=self.url)
         soup = parser.get_soup(self.url)
-        pagination = parser.get_pagination("div", "class", "pagination")
+        # pagination = parser.get_pagination("div", "class", "pagination")
         posts = self.get_posts(soup)
 
         self.get_save_info(posts)
 
-        if pagination:
-            for page_index in range(2, self.page_count):
-                soup = parser.get_soup('{}/page{}'.format(self.url, page_index))
-                posts = self.get_posts(soup)
-                self.get_save_info(posts)
+        # if pagination:
+        #     for page_index in range(2, self.page_count):
+        #         soup = parser.get_soup('{}/page{}'.format(self.url, page_index))
+        #         posts = self.get_posts(soup)
+        #         self.get_save_info(posts)
 
     @staticmethod
     def get_posts(soup):

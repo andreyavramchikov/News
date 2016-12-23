@@ -9,7 +9,7 @@ from core.models import News
 
 class Command(BaseCommand):
     GAGADGET = 'http://gagadget.com'
-    PAGE_COUNT = 3
+    PAGE_COUNT = 2
 
     def handle(self, *args, **options):
         pagination = None

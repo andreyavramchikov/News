@@ -73,11 +73,14 @@ def parse_all_sites(modeladmin, request, queryset):
     call_command('tproger')
     call_command('ain_ua')
     call_command('gagadget')
+    call_command('itmentor')
 
 
 def parse_habr(modeladmin, request, queryset):
     call_command('habrahabr')
 
+def parse_itmentor(modeladmin, request, queryset):
+    call_command('itmentor')
 
 def parse_geektimes(modeladmin, request, queryset):
     call_command('geektimes')
@@ -101,3 +104,4 @@ admin.site.add_action(parse_geektimes)
 admin.site.add_action(parse_tproger)
 admin.site.add_action(parse_ain_ua)
 admin.site.add_action(parse_gagadget)
+admin.site.add_action(parse_itmentor)

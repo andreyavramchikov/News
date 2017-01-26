@@ -12,13 +12,14 @@ class News(models.Model):
     TPROGER = 'TPROGER'
     GAGADGET = 'GAGADGET'
     AIN = 'AIN'
+    ITMENTOR = 'ITMENTOR'
     SITE_CHOICES = (
         (HABRAHABR, 'HABRAHABR'),
         (GEEKTIMES, 'GEEKTIMES'),
         (TPROGER, 'TPROGER'),
         (GAGADGET, 'GAGADGET'),
         (AIN, 'AIN'),
-
+        (ITMENTOR, 'ITMENTOR'),
     )
 
     site = models.CharField(choices=SITE_CHOICES, max_length=255)

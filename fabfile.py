@@ -1,75 +1,63 @@
-from fabric.api import env, run
-from fabric.operations import sudo
-
-env.user = 'ubuntu'
-env.hosts = [
-    'ec2-54-165-162-6.compute-1.amazonaws.com'
-]
+from fabric.api import run, env, local, sudo, prefix
+from contextlib import contextmanager
 
 
-env.key_filename = '/home/andrey/News.pem'
-env.project_name = 'News'
-env.path = '/home/ubuntu/projects/%(project_name)s' % env
-env.env_path = '%(path)s/env' % env
-env.repo_path = '%(path)s/repository' % env
-env.supervisor_log_path = '%(path)s/repository/logs' % env
+def live():
+    env.hosts = ['54.202.179.222']
+    env.user = 'ubuntu'
+    env.cwd = '/var/www/project/buildout'
+    env.project = 'News'
 
 
-# deploy site with nginx-uwsgi conjunction
 def deploy():
-    clean_repositories()
-    setup_directories()
-    setup_virtualenv()
-    clone_repo()
-    install_requirements()
-    # run('source %(env_path)s/bin/activate; %(env_path)s/bin/python %(repo_path)s/manage.py collectstatic' % env)
-    sudo('apt-get install xvfb')
-    sudo(
-        'ln -s /home/ubuntu/projects/News/repository/mysite_nginx.conf /etc/nginx/sites-enabled/')
-    sudo('/etc/init.d/nginx restart')
-    run('source %(env_path)s/bin/activate; %(env_path)s/bin/python %(repo_path)s/manage.py migrate' % env)
-    run('source %(env_path)s/bin/activate; pip install uwsgi' % env)
-    run('source %(env_path)s/bin/activate; uwsgi --ini %(repo_path)s/mysite_uwsgi.ini' % env)
+    # sudo("git pull")
+    pass
 
 
+def initial():
+    # setup_directories()
+    # run("git pull")
+    # clone_repo()
+    # install_virtualenv()
+    # install_requirements()
+    # create_nginx_config_symblink()
+    activate_uwsgi_ini()
 
-def clean_repositories():
-    sudo('rm -rf projects')
-    sudo('rm -rf /etc/nginx/sites-enabled/mysite_nginx.conf')
+
+def create_nginx_config_symblink():
+    sudo('ln -s %s/%s/mysite_nginx.conf /etc/nginx/sites-enabled/' %(env.cwd, env.project))
 
 
-def install_requirements():
-    """
-    Install the required packages using pip.
-    """
-    run('source %(env_path)s/bin/activate; pip install -r %(repo_path)s/requirements.txt' % env)
+def activate_uwsgi_ini():
+    sudo('uwsgi --ini %s/%s/mysite_uwsgi.ini' % (env.cwd, env.project))
+
+# not working
+def setup_directories():
+    sudo('mkdir %s' % env.cwd)
 
 
 def clone_repo():
-    """
-    Do initial clone of the git repository.
-    """
-    run('git clone https://github.com/andreyavramchikov/%(project_name)s.git %(repo_path)s' % env)
+    sudo('git clone https://github.com/andreyavramchikov/News.git')
 
 
-def setup_directories():
-    """
-    Create directories necessary for deployment.
-    """
-    run('mkdir -p %(path)s' % env)
-    run('mkdir -p %(env_path)s' % env)
+@contextmanager
+def source_env():
+    """Actives embedded virtual env"""
+    with prefix('source env/bin/activate'):
+        yield
 
 
-def activate_virtualenv():
-    run('source %(env_path)s/bin/activate;' % env)
+def install_requirements():
+    """Installs requirements.txt packages using pip"""
+    with source_env():
+        sudo('pip install -r News/requirements.txt')
 
 
-def setup_virtualenv():
+def install_virtualenv():
     """
     Setup a fresh virtualenv.
     """
-    run('virtualenv %(env_path)s --no-site-packages;' % env)
-    run('source %(env_path)s/bin/activate;' % env)
+    sudo('virtualenv %s/env --no-site-packages;' % env.cwd)
 
 
 def setup():
@@ -81,4 +69,4 @@ def setup():
     sudo('apt-get install -y git')
     sudo('apt-get install -y nginx')
     sudo('apt-get install -y build-essential python')
-    sudo('apt-get install -y python-dev')
+    sudo('apt install -y uwsgi')
